@@ -1,0 +1,52 @@
+{
+  "type": "Collection",
+  "id": "antigua_and_barbuda-collection",
+  "stac_version": "1.1.0",
+  "description": "STAC Collection for antigua_and_barbuda datasets",
+  "links": [
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "Trends.Earth STAC Catalog"
+    },
+    {
+      "rel": "item",
+      "href": "./antigua_and_barbuda_drought/antigua_and_barbuda_drought.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./antigua_and_barbuda_sdg_15_3_1/antigua_and_barbuda_sdg_15_3_1.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "Trends.Earth STAC Catalog"
+    }
+  ],
+  "title": "antigua_and_barbuda Datasets",
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          -180,
+          -90,
+          180,
+          90
+        ]
+      ]
+    },
+    "temporal": {
+      "interval": [
+        [
+          "2015-01-01T00:00:00Z",
+          "2025-02-21T11:04:25.178538Z"
+        ]
+      ]
+    }
+  },
+  "license": "other"
+}

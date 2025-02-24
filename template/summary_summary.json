@@ -1,0 +1,185 @@
+{
+"metadata": {
+    "title": "Trends.Earth Summary Report",
+    "date": "2025-02-04T03:38:07+00:00",
+    "trends_earth_version": {
+      "version": "2.1.17",
+      "release_date": "2025-01-24T19:39:41+00:00",
+      "revision": null
+    },
+    "area_of_interest": {
+      "name": "ATG - 394ed333-0687-43ff-9775-9977543added",
+      "geojson": {
+        "type": "Feature",
+        "properties": {
+          "objectid": 674,
+          "iso3cd": "ATG",
+          "romnam": "Antigua and Barbuda",
+          "maplab": "ANTIGUA AND BARBUDA",
+          "contcd": "AME",
+          "stscod": 1,
+          "typ005": 1,
+          "typ025": 1,
+          "del025": 0,
+          "isoclr": "ATG",
+          "globalid": "{0638F374-A7D7-4DE4-BCAE-62239B2FFFF0}",
+          "st_area_sh": 0.03766389693,
+          "st_length_": 2.30101150366
+        },
+        "geometry": {
+          "type": "MultiPolygon",
+          "coordinates": []
+        }
+      }
+    }
+  },
+  "drought": {
+    "tier_one": {
+      "2000": {
+        "name": "Area by drought class",
+        "unit": "sq km",
+        "areas": [
+          {
+            "name": "Mild drought",
+            "area": 0.0
+          },
+          {
+            "name": "Moderate drought",
+            "area": 140.941353005796
+          },
+          {
+            "name": "Severe drought",
+            "area": 303.5870628536396
+          },
+          {
+            "name": "Extreme drought",
+            "area": 0.0
+          },
+          {
+            "name": "Non-drought",
+            "area": 0.0
+          },
+          {
+            "name": "No data",
+            "area": 0.0
+          }
+        ]
+      }
+    },
+    "tier_two": {
+      "2000": {
+        "Total population": {
+          "name": "Population by drought class",
+          "values": [
+            {
+              "name": "Mild drought",
+              "population": 0,
+              "type": "Total population"
+            },
+            {
+              "name": "Moderate drought",
+              "population": 651,
+              "type": "Total population"
+            },
+            {
+              "name": "Severe drought",
+              "population": 69945,
+              "type": "Total population"
+            },
+            {
+              "name": "Extreme drought",
+              "population": 0,
+              "type": "Total population"
+            },
+            {
+              "name": "Non-drought",
+              "population": 0,
+              "type": "Total population"
+            },
+            {
+              "name": "No data",
+              "population": 0,
+              "type": "Total population"
+            }
+          ]
+        },
+        "Male population": {
+          "name": "Population by drought class",
+          "values": [
+            {
+              "name": "Mild drought",
+              "population": 0,
+              "type": "Male population"
+            },
+            {
+              "name": "Moderate drought",
+              "population": 304,
+              "type": "Male population"
+            },
+            {
+              "name": "Severe drought",
+              "population": 32968,
+              "type": "Male population"
+            },
+            {
+              "name": "Extreme drought",
+              "population": 0,
+              "type": "Male population"
+            },
+            {
+              "name": "Non-drought",
+              "population": 0,
+              "type": "Male population"
+            },
+            {
+              "name": "No data",
+              "population": 0,
+              "type": "Male population"
+            }
+          ]
+        },
+        "Female population": {
+          "name": "Population by drought class",
+          "values": [
+            {
+              "name": "Mild drought",
+              "population": 0,
+              "type": "Female population"
+            },
+            {
+              "name": "Moderate drought",
+              "population": 347,
+              "type": "Female population"
+            },
+            {
+              "name": "Severe drought",
+              "population": 36977,
+              "type": "Female population"
+            },
+            {
+              "name": "Extreme drought",
+              "population": 0,
+              "type": "Female population"
+            },
+            {
+              "name": "Non-drought",
+              "population": 0,
+              "type": "Female population"
+            },
+            {
+              "name": "No data",
+              "population": 0,
+              "type": "Female population"
+            }
+          ]
+        }
+      }
+    },
+    "tier_three": {
+      "2018": {
+        "name": "Mean value",
+        "value": 7.200966867989647
+      }
+    }
+  }
+}

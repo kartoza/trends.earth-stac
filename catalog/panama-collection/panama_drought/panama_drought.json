@@ -1,0 +1,48 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [],
+  "id": "panama_drought",
+  "geometry": null,
+  "properties": {
+    "datetime": "2025-02-21T11:04:25.182086Z"
+  },
+  "links": [
+    {
+      "rel": "root",
+      "href": "../../catalog.json",
+      "type": "application/json",
+      "title": "Trends.Earth STAC Catalog"
+    },
+    {
+      "rel": "collection",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "panama Datasets"
+    },
+    {
+      "rel": "parent",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "panama Datasets"
+    }
+  ],
+  "assets": {
+    "drought-vulnerability-summary_summary_json": {
+      "href": "panama/drought-vulnerability-summary_summary.json"
+    },
+    "drought-vulnerability-summary_summary_xlsx": {
+      "href": "panama/drought-vulnerability-summary_summary.xlsx"
+    },
+    "drought-vulnerability-summary_band_key_json": {
+      "href": "panama/drought-vulnerability-summary_band_key.json"
+    },
+    "drought-vulnerability-summary_0_json": {
+      "href": "panama/drought-vulnerability-summary_0.json"
+    },
+    "drought-vulnerability-summary_0_tif": {
+      "href": "panama/drought-vulnerability-summary_0.tif"
+    }
+  },
+  "collection": "panama-collection"
+}

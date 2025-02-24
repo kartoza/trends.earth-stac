@@ -1,0 +1,16 @@
+{
+  "path": "drought-vulnerability-summary_0.tif",
+  "bands": [
+    {
+      "name": "Minimum SPI over period",
+      "metadata": {
+        "year_initial": 2000,
+        "year_final": 2003,
+        "lag": 12
+      },
+      "no_data_value": -32768,
+      "activated": true,
+      "add_to_map": true
+    }
+  ]
+}
