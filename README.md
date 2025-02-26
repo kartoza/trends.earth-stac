@@ -18,15 +18,14 @@ pip install -r requirements.txt
 
 ## Usage
 Clone the repository or download the project files.
-
 Run the Python script to generate the STAC catalog:
 
 ```bash
-python create_stac_catalog.py
+python src/main.py
 ```
 The catalog will be generated in the catalog/ directory.
 
-Validate the catalog using the stac command-line tool:
+Use the below command to validate the catalog using the stac validator tool:
 
 ```bash
 
@@ -36,12 +35,8 @@ stac-validator catalog/catalog.json
 
 
 ## Customization
-Add more collections and items by modifying the `create_country_collection` and `create_country_item` functions in the script.
-
-Update the asset paths to include additional files or datasets.
-
-## Contributing
-Contributions are welcome! If you have suggestions or improvements, please open an issue or submit a pull request.
+More collections and items can be added by modifying the `create_country_collection` and `create_country_item` functions in the script.
+The asset paths will also need to be updated in order to include additional files or datasets.
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for details.

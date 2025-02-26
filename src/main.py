@@ -1,23 +1,47 @@
 import json
 import logging
 import pystac
-from pystac import Catalog, CatalogType, Collection, Item, Asset
+from pystac import Catalog, CatalogType, Collection, Item, Asset, Link
 from datetime import datetime
 import os
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def create_root_catalog():
+    """Create the root STAC Catalog."""
     catalog = Catalog(
         id="trends-earth-catalog",
-        description="A STAC catalog for organizing Trends.Earth JSON outputs.",
-        title="Trends.Earth STAC Catalog"
+        description="Searchable spatiotemporal metadata describing Earth science "
+                    "datasets hosted by the Trends.Earth platform.",
+        title="Trends.Earth STAC API",
     )
+
+
+    catalog.extra_fields.update({
+        "conformsTo": [
+            "https://api.stacspec.org/v1.0.0/item-search",
+            "https://api.stacspec.org/v1.0.0-rc.2/item-search#filter",
+            "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2",
+            "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text",
+            "https://api.stacspec.org/v1.0.0/collections",
+            "https://api.stacspec.org/v1.0.0/core",
+            "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30",
+            "https://api.stacspec.org/v1.0.0/ogcapi-features",
+            "https://api.stacspec.org/v1.0.0/item-search#fields",
+            "https://api.stacspec.org/v1.0.0/item-search#query",
+            "https://api.stacspec.org/v1.0.0/item-search#sort",
+            "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter",
+            "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
+            "http://www.opengis.net/spec/cql2/1.0/conf/cql2-json",
+            "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson"
+        ]
+    })
+
     return catalog
 
 def create_country_collection(country_name):
+    """Create a STAC Collection for a country."""
     collection = Collection(
         id=f"{country_name}-collection",
         description=f"STAC Collection for {country_name} datasets",
@@ -25,11 +49,34 @@ def create_country_collection(country_name):
             spatial=pystac.SpatialExtent([[-180, -90, 180, 90]]),
             temporal=pystac.TemporalExtent([[datetime(2015, 1, 1), datetime.now()]])
         ),
-        title=f"{country_name} Datasets"
+        title=f"{country_name} Datasets",
+        license="proprietary",
+        keywords=["Land Degradation", "Drought", "SDG 15.3.1", country_name]
     )
+
+    collection.assets = {
+        "thumbnail": Asset(
+            href="https://docs.trends.earth/en/latest/_static/trends_earth_logo_square_32x32.ico",
+            media_type="image/ico",
+            roles=["thumbnail"],
+            title=f"{country_name} Dataset Thumbnail"
+        ),
+    }
+
+    collection.extra_fields.update({
+        "trends:short_description": f"Land degradation and drought datasets for {country_name}",
+        "trends:region": "global"
+    })
+
     return collection
 
-def create_country_item(country_name, item_id, item_description, assets, properties=None):
+def create_country_item(
+        country_name,
+        item_id,
+        item_description,
+        assets,
+        properties=None
+):
     item = Item(
         id=item_id,
         geometry=None,
@@ -105,10 +152,9 @@ def scan_data_folder(data_folder):
     for country in countries:
         country_path = os.path.join(data_folder, country)
         datasets = {"drought": {}, "sdg-15-3-1": {}}
-        drought_summary_file_path = os.path.join(country_path, "drought_summary.json")
-        sdg_summary_file_path = os.path.join(country_path, "sdg-15-3-1_summary.json")
+        drought_summary_file_path = os.path.join(country_path, "drought-vulnerability-summary_0.json")
+        sdg_summary_file_path = os.path.join(country_path, "sdg-15-3-1-summary.json")
 
-        # Read the summary files
         drought_summary_data = read_summary_json(drought_summary_file_path)
         sdg_summary_data = read_summary_json(sdg_summary_file_path)
 
@@ -117,16 +163,15 @@ def scan_data_folder(data_folder):
 
         for root, dirs, files in os.walk(country_path):
             for file in files:
-                if "drought" in file and file != "drought_summary.json":
+                if "drought" in file and file != "drought-vulnerability-summary_0.json":
                     asset_key = file.replace('.', '_')
                     datasets["drought"][asset_key] = os.path.relpath(os.path.join(root, file), start=data_folder)
-                elif "sdg-15-3-1" in file and file != "sdg-15-3-1_summary.json":
+                elif "sdg-15-3-1" in file and file != "sdg-15-3-1-summary.json":
                     asset_key = file.replace('.', '_')
                     datasets["sdg-15-3-1"][asset_key] = os.path.relpath(os.path.join(root, file), start=data_folder)
         yield country, datasets, drought_properties, sdg_properties
 
 def main():
-    # Define the data folder path
     data_folder = "src/data"
 
     logger.info("Creating STAC Trends Earth catalog")
@@ -144,7 +189,7 @@ def main():
                 f"{country}_drought",
                 f"STAC Item for {country} Drought Dataset",
                 datasets["drought"],
-                properties=drought_properties  # Add properties from the drought summary file
+                properties=drought_properties
             )
             country_collection.add_item(drought_item)
 
@@ -154,7 +199,7 @@ def main():
                 f"{country}_sdg_15_3_1",
                 f"STAC Item for {country} SDG 15.3.1 Dataset",
                 datasets["sdg-15-3-1"],
-                properties=sdg_properties  # Add properties from the SDG summary file
+                properties=sdg_properties
             )
             country_collection.add_item(sdg_item)
 
