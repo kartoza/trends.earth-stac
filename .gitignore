@@ -46,3 +46,4 @@ pydev/
 .env
 src/data
 template
+catalog/
