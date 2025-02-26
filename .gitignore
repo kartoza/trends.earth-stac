@@ -45,5 +45,5 @@ pydev/
 .vscode-extensions/
 .env
 src/data
-template
+template/
 catalog/
