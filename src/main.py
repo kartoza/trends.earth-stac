@@ -8,6 +8,7 @@ import os
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 def create_root_catalog():
     """Create the root STAC Catalog."""
     catalog = Catalog(
@@ -16,7 +17,6 @@ def create_root_catalog():
                     "datasets hosted by the Trends.Earth platform.",
         title="Trends.Earth STAC API",
     )
-
 
     catalog.extra_fields.update({
         "conformsTo": [
@@ -39,6 +39,7 @@ def create_root_catalog():
     })
 
     return catalog
+
 
 def create_country_collection(country_name):
     """Create a STAC Collection for a country."""
@@ -70,6 +71,7 @@ def create_country_collection(country_name):
 
     return collection
 
+
 def create_country_item(
         country_name,
         item_id,
@@ -88,6 +90,7 @@ def create_country_item(
         item.add_asset(asset_key, Asset(href=asset_path))
     return item
 
+
 def read_summary_json(file_path):
     """Read and parse the summary JSON file."""
     if not os.path.exists(file_path):
@@ -100,6 +103,7 @@ def read_summary_json(file_path):
         except json.JSONDecodeError as e:
             logger.error(f"Error parsing JSON file {file_path}: {e}")
             return None
+
 
 def extract_properties_from_drought_summary(summary_data):
     """Extract relevant properties from the drought summary JSON data."""
@@ -119,10 +123,33 @@ def extract_properties_from_drought_summary(summary_data):
     }
     return properties
 
+
 def extract_properties_from_sdg_summary(summary_data):
     """Extract relevant properties from the SDG summary JSON data."""
     if not summary_data:
         return {}
+
+    values = (
+        summary_data.get("results", {})
+        .get("data", {})
+        .get("report", {})
+        .get("land_condition", {})
+        .get("baseline", {})
+        .get("land_cover", {})
+        .get("land_cover_areas_by_year", {})
+        .get("values", {})
+    )
+
+    # Collect year-wise stats
+    land_cover_by_year = []
+    for year, classes in values.items():
+        total_land_area = sum(classes.values())
+        water_bodies = classes.get("Water body", 0)
+        land_cover_by_year.append({
+            "year": int(year),
+            "total_land_area_km2": round(total_land_area, 2),
+            "water_bodies_km2": round(water_bodies, 2)
+        })
 
     properties = {
         "id": summary_data.get("id"),
@@ -133,11 +160,13 @@ def extract_properties_from_sdg_summary(summary_data):
         "task_name": summary_data.get("task_name"),
         "script_version": summary_data.get("script", {}).get("version"),
         "area_of_interest": summary_data.get("local_context", {}).get("area_of_interest_name"),
-        "sdg_summary": summary_data.get("land_condition", {}).get("baseline", {}).get("sdg", {}).get("summary")
+        "sdg_summary": summary_data.get("land_condition", {}).get("baseline", {}).get("sdg", {}).get("summary", {}),
+        "land_cover_by_year": land_cover_by_year
     }
     return properties
 
-def scan_data_folder(data_folder):
+
+def scan_data_folder(data_folder: str):
     if not os.path.exists(data_folder):
         logger.error(f"Data folder {data_folder} does not exist.")
         return
@@ -152,24 +181,33 @@ def scan_data_folder(data_folder):
     for country in countries:
         country_path = os.path.join(data_folder, country)
         datasets = {"drought": {}, "sdg-15-3-1": {}}
-        drought_summary_file_path = os.path.join(country_path, "drought-vulnerability-summary_0.json")
-        sdg_summary_file_path = os.path.join(country_path, "sdg-15-3-1-summary.json")
+        drought_summary_file_path = os.path.join(
+            country_path, "drought-vulnerability-summary_0.json")
+
+        sdg_summary_file_path = None
+        for file in os.listdir(country_path):
+            if file.startswith("sdg-15-3-1-summary_") and file.endswith(".json"):
+                sdg_summary_file_path = os.path.join(country_path, file)
+                break
 
         drought_summary_data = read_summary_json(drought_summary_file_path)
-        sdg_summary_data = read_summary_json(sdg_summary_file_path)
+        sdg_summary_data = read_summary_json(sdg_summary_file_path) if sdg_summary_file_path else {}
 
         drought_properties = extract_properties_from_drought_summary(drought_summary_data)
         sdg_properties = extract_properties_from_sdg_summary(sdg_summary_data)
-
         for root, dirs, files in os.walk(country_path):
             for file in files:
+                print(f'file {file}')
                 if "drought" in file and file != "drought-vulnerability-summary_0.json":
                     asset_key = file.replace('.', '_')
-                    datasets["drought"][asset_key] = os.path.relpath(os.path.join(root, file), start=data_folder)
-                elif "sdg-15-3-1" in file and file != "sdg-15-3-1-summary.json":
+                    datasets["drought"][asset_key] = os.path.relpath(
+                        os.path.join(root, file), start=data_folder)
+                elif "sdg-15-3-1" in file:
                     asset_key = file.replace('.', '_')
-                    datasets["sdg-15-3-1"][asset_key] = os.path.relpath(os.path.join(root, file), start=data_folder)
+                    datasets["sdg-15-3-1"][asset_key] = os.path.relpath(
+                        os.path.join(root, file), start=data_folder)
         yield country, datasets, drought_properties, sdg_properties
+
 
 def main():
     data_folder = "src/data"
@@ -182,6 +220,8 @@ def main():
     for country, datasets, drought_properties, sdg_properties in scan_data_folder(data_folder):
         logger.info(f"{country}: {len(datasets)}")
         country_collection = create_country_collection(country)
+
+        print(sdg_properties)
 
         if datasets["drought"]:
             drought_item = create_country_item(
@@ -201,6 +241,7 @@ def main():
                 datasets["sdg-15-3-1"],
                 properties=sdg_properties
             )
+            print(sdg_item)
             country_collection.add_item(sdg_item)
 
         catalog.add_child(country_collection)
@@ -209,6 +250,7 @@ def main():
         root_href="catalog",
         catalog_type=CatalogType.SELF_CONTAINED
     )
+
 
 if __name__ == "__main__":
     main()
