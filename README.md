@@ -20,9 +20,30 @@ pip install -r requirements.txt
 Clone the repository or download the project files.
 Run the Python script to generate the STAC catalog:
 
+Copy your trends.earth dataset into src/data in a folder
+named after the country:
+
+```bash
+mkdir src/data/portugal
+cp /home/XXXX/trends_earth_data/datasets/a816c5b7-196a-4229-8df8-41b156c4d911/* src/data/portugal/
+```
+Then run the STAC generator:
+
 ```bash
 python src/main.py
 ```
+
+You should see some output like this:
+
+
+```bash
+INFO:__main__:Creating STAC Trends Earth catalog
+INFO:__main__:Scanning folder src/data, ['portugal']
+WARNING:__main__:Summary file src/data/portugal/drought-vulnerability-summary_0.json does not exist.
+WARNING:__main__:Summary file src/data/portugal/sdg-15-3-1-summary.json does not exist.
+INFO:__main__:portugal: 2
+```
+
 The catalog will be generated in the catalog/ directory.
 
 Use the below command to validate the catalog using the stac validator tool:
